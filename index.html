@@ -557,16 +557,25 @@ async function doCreate(){
   const name=qv('inp-name');
   if(!name){showErr('err-home','Masukkan nama dulu!');return;}
   if(!db){showErr('err-home','Firebase belum dikonfigurasi!');return;}
-  G.myName=name;G.isHost=true;G.myId=genId();G.roomId=genId();
-  const room={
-    hostId:G.myId,phase:'lobby',
-    players:[{id:G.myId,name,ci:0}],
-    hands:{},arrs:{},scores:{},created:firebase.database.ServerValue.TIMESTAMP
-  };
-  await roomRef(G.roomId).set(room);
-  // Auto-delete room after 2 hours
-  roomRef(G.roomId).child('expires').set(Date.now()+7200000);
-  showLobby();listenRoom();
+  const btn=document.getElementById('btn-create');
+  btn.disabled=true;btn.textContent='Membuat room...';
+  try{
+    G.myName=name;G.isHost=true;G.myId=genId();G.roomId=genId();
+    const room={
+      hostId:G.myId,phase:'lobby',
+      players:[{id:G.myId,name,ci:0}],
+      hands:{},arrs:{},scores:{},created:firebase.database.ServerValue.TIMESTAMP
+    };
+    await roomRef(G.roomId).set(room);
+    showLobby();
+    listenRoom();
+  }catch(e){
+    console.error('doCreate error:',e);
+    showErr('err-home','Gagal membuat room: '+e.message);
+    G.roomId=null;
+  }finally{
+    btn.disabled=false;btn.textContent='🃏 \u00a0Buat Game Baru';
+  }
 }
 
 async function doJoin(){
@@ -869,9 +878,11 @@ function gotoScore(){
 // ══════════════════════════════════════════
 function showLobby(){
   showScreen('lobby');
-  document.getElementById('lob-code').textContent=G.roomId||'—';
+  const code=G.roomId||'—';
+  document.getElementById('lob-code').textContent=code;
   const url=location.origin+location.pathname+'?room='+(G.roomId||'');
   document.getElementById('lob-url').textContent=url;
+  if(G.roomId&&G.isHost) toast('Room dibuat! Kode: '+G.roomId);
 }
 function showScreen(n){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
