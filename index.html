@@ -4,39 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CapSun</title>
-    <!-- Add your stylesheets and scripts here -->
 </head>
 <body>
-    <h1>Welcome to CapSun</h1>
-    <div id="lobby">
-        <!-- Lobby content goes here -->
-    </div>
-    <script>
-        // Function to show lobby
-        function showLobby(roomCode) {
-            // Improved room code display logic
-            const lobbyDiv = document.getElementById('lobby');
-            lobbyDiv.innerHTML = `Room Code: ${roomCode}`;
-        }
-
-        // Function to handle room updates
-        function onRoomUpdate(roomData) {
-            // Handle updates and set up Firebase listener triggers
-            if (roomData && roomData.code) {
-                showLobby(roomData.code);
-            }
-        }
-
-        // Firebase initialization and listeners
-        const firebaseConfig = { /* Your Firebase config */ };
-        firebase.initializeApp(firebaseConfig);
-        const roomRef = firebase.database().ref('rooms');
-
-        // Listening for room updates
-        roomRef.on('value', (snapshot) => {
-            const roomData = snapshot.val();
-            onRoomUpdate(roomData);
-        });
-    </script>
+    <h1>Welcome to CapSun!</h1>
+    <p>This is the original working index.html for the CapSun project.</p>
 </body>
 </html>
