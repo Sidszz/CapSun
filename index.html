@@ -557,24 +557,50 @@ async function doCreate(){
   const name=qv('inp-name');
   if(!name){showErr('err-home','Masukkan nama dulu!');return;}
   if(!db){showErr('err-home','Firebase belum dikonfigurasi!');return;}
+  
   const btn=document.getElementById('btn-create');
-  btn.disabled=true;btn.textContent='Membuat room...';
+  btn.disabled=true;
+  btn.textContent='Membuat room...';
+  
   try{
-    G.myName=name;G.isHost=true;G.myId=genId();G.roomId=genId();
-    const room={
-      hostId:G.myId,phase:'lobby',
-      players:[{id:G.myId,name,ci:0}],
-      hands:{},arrs:{},scores:{},created:firebase.database.ServerValue.TIMESTAMP
+    // Generate IDs FIRST
+    const myId = genId();      // Generate player ID
+    const roomId = genId();    // Generate room ID
+    
+    // Store in global state
+    G.myName = name;
+    G.isHost = true;
+    G.myId = myId;
+    G.roomId = roomId;
+    
+    // Create room object WITH the generated IDs
+    const room = {
+      hostId: myId,  // ✅ Use the generated myId
+      phase: 'lobby',
+      players: [{
+        id: myId,    // ✅ Use the generated myId
+        name: name,
+        ci: 0
+      }],
+      hands: {},
+      arrs: {},
+      scores: {},
+      created: firebase.database.ServerValue.TIMESTAMP
     };
-    await roomRef(G.roomId).set(room);
+    
+    // Write to Firebase
+    await roomRef(roomId).set(room);
+    
     showLobby();
     listenRoom();
+    
   }catch(e){
-    console.error('doCreate error:',e);
-    showErr('err-home','Gagal membuat room: '+e.message);
-    G.roomId=null;
+    console.error('doCreate error:', e);
+    showErr('err-home', 'Gagal membuat room: ' + e.message);
+    G.roomId = null;
   }finally{
-    btn.disabled=false;btn.textContent='🃏 \u00a0Buat Game Baru';
+    btn.disabled = false;
+    btn.textContent = '🃏  Buat Game Baru';
   }
 }
 
