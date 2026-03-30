@@ -546,7 +546,7 @@ let G={
   listeners:[],
   localPlayers:[],allArrs:{},scores:{},
 };
-function genId(len=6){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from({length},()=>c[0|Math.random()*c.length]).join('');}
+function genId(len=6){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from({length:len},()=>c[0|Math.random()*c.length]).join('');}
 
 // ══════════════════════════════════════════
 //  FIREBASE ROOM HELPERS
@@ -560,17 +560,25 @@ async function doCreate(){
   const btn=document.getElementById('btn-create');
   btn.disabled=true;btn.textContent='Membuat room...';
   try{
-    G.myName=name;G.isHost=true;G.myId=genId();G.roomId=genId();
-    console.log('Generated Room ID:', G.roomId);  // DEBUG
+    G.myName=name;
+    G.isHost=true;
+    G.myId=genId();
+    G.roomId=genId();
+    
+    console.log('Generated Room ID:',G.roomId);
+    
     const room={
       hostId:G.myId,phase:'lobby',
       players:[{id:G.myId,name,ci:0}],
       hands:{},arrs:{},scores:{},created:firebase.database.ServerValue.TIMESTAMP
     };
+    
     await roomRef(G.roomId).set(room);
-    console.log('Room saved to Firebase');  // DEBUG
+    
+    console.log('Room saved to Firebase');
+    
     showLobby();
-    console.log('After showLobby - G.roomId:', G.roomId);  // DEBUG
+    console.log('After showLobby - G.roomId:',G.roomId);
     listenRoom();
   }catch(e){
     console.error('doCreate error:',e);
