@@ -560,22 +560,17 @@ async function doCreate(){
   const btn=document.getElementById('btn-create');
   btn.disabled=true;btn.textContent='Membuat room...';
   try{
-    G.myName=name;
-    G.isHost=true;
-    G.myId=genId();
-    G.roomId=genId();
-    
+    G.myName=name;G.isHost=true;G.myId=genId();G.roomId=genId();
+    console.log('Generated Room ID:', G.roomId);  // DEBUG
     const room={
       hostId:G.myId,phase:'lobby',
       players:[{id:G.myId,name,ci:0}],
       hands:{},arrs:{},scores:{},created:firebase.database.ServerValue.TIMESTAMP
     };
-    
     await roomRef(G.roomId).set(room);
-    
-    console.log('Room created with ID:', G.roomId);
-    
+    console.log('Room saved to Firebase');  // DEBUG
     showLobby();
+    console.log('After showLobby - G.roomId:', G.roomId);  // DEBUG
     listenRoom();
   }catch(e){
     console.error('doCreate error:',e);
