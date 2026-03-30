@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "rooms": {
+      "$roomId": {
+        ".read": true,
+        ".write": true,
+        ".indexOn": ["created", "phase"],
+        "players": {
+          ".validate": "newData.val().length <= 4"
+        }
+      }
+    }
+  }
+}
