@@ -560,15 +560,21 @@ async function doCreate(){
   const btn=document.getElementById('btn-create');
   btn.disabled=true;btn.textContent='Membuat room...';
   try{
-    const myId=genId();
-    const roomId=genId();
-    G.myName=name;G.isHost=true;G.myId=myId;G.roomId=roomId;
+    G.myName=name;
+    G.isHost=true;
+    G.myId=genId();
+    G.roomId=genId();
+    
     const room={
-      hostId:myId,phase:'lobby',
-      players:[{id:myId,name:name,ci:0}],
+      hostId:G.myId,phase:'lobby',
+      players:[{id:G.myId,name,ci:0}],
       hands:{},arrs:{},scores:{},created:firebase.database.ServerValue.TIMESTAMP
     };
-    await roomRef(roomId).set(room);
+    
+    await roomRef(G.roomId).set(room);
+    
+    console.log('Room created with ID:', G.roomId);
+    
     showLobby();
     listenRoom();
   }catch(e){
