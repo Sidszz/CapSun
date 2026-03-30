@@ -318,13 +318,6 @@ body{
     <div class="logo-sub">Online Multiplayer</div>
   </div>
 
-  <!-- shown if Firebase not configured -->
-  <div class="setup-guide" id="setup-guide" style="display:none">
-    <h3>⚙️ Setup Firebase Diperlukan</h3>
-    <p>Edit file <strong>firebase-config.js</strong> dengan konfigurasi Firebase kamu. Lihat README.md untuk panduan lengkap.</p>
-    <a href="https://console.firebase.google.com" target="_blank">→ Buka Firebase Console</a>
-  </div>
-
   <div class="card-home" id="home-form">
     <div class="fgroup">
       <div class="flabel">Nama Kamu</div>
@@ -473,20 +466,12 @@ let db=null;
 
 function initFirebase(){
   try{
-    // firebaseConfig is loaded from firebase-config.js
-    if(typeof firebaseConfig==='undefined'||!firebaseConfig.apiKey||firebaseConfig.apiKey==='YOUR_API_KEY'){
-      document.getElementById('setup-guide').style.display='flex';
-      document.getElementById('home-form').style.opacity='.4';
-      document.getElementById('btn-create').disabled=true;
-      document.getElementById('btn-join').disabled=true;
-      return false;
-    }
     if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     db=firebase.database();
     return true;
   }catch(e){
     console.error('Firebase init error:',e);
-    document.getElementById('setup-guide').style.display='flex';
+    alert('Gagal konek ke Firebase: '+e.message);
     return false;
   }
 }
